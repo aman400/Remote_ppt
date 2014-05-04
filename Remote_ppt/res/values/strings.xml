@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">DROID DROW</string>
+    <string name="title_activity_scanning__service">Scanning Service</string>
+    <string name="title_activity_file_viewer">Files</string>
+	<string name="title_activity_make_connection">Select Your Presentation</string>
+    <string name="action_settings">Settings</string>
+    <string name="ip">Network Address</string>
+    <string name="port">port</string>
+    <string name="connect">connect</string>
+    <string name="title_activity_server_scanner">Select a PC</string>
+    <string name="server_name">server</string>
+    <string name="image">server Image</string>
+    <string name="text">ip address</string>
+    <string name="board">Board</string>
+    <string name="title_activity_board">Draw</string>
+    <string name="click">Click</string>
+    <string name="open_port">5678</string>
+   	<string name="network_address">192.168.43</string>
+	<string name="dialog_message">Do you want to project PPTs?</string>
+	<string name="positive_button">Yes</string>
+	<string name="negetive_button">No</string>
+	<string name="dialog_title">Confirm</string>
+	<string name="confirm_exit">Are you sure you want to close presentation?</string>
+	<string name="image_description">image</string>
+	<string name="eraser">Eraser</string>
+	<string name="red">Red</string>
+	<string name="blue">Blue</string>
+	<string name="yellow">Yellow</string>
+	<string name="green">Green</string>
+	<string name="cyan">Cyan</string>
+	<string name="black">Black</string>
+	<string name="white">White</string>
+	<string name="gray">Gray</string>
+	<string name="magenta">Magenta</string>
+	<string name="whiteboard">Whiteboard</string>
+</resources>
