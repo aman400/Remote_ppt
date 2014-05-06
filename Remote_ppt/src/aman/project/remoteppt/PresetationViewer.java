@@ -17,6 +17,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +35,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 	private File extractionDirectory;
 	private Scanner scanner;
 	private int width, height;
+	private MenuItem itemGroup;
 	
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -46,10 +48,11 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 		// set Screen orientation to Landscape
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		
+		// setup ActionBar
 		ActionBar bar = getActionBar();
 		bar.setDisplayHomeAsUpEnabled(true);
+	
 		// get width and height of Screen
-
 		Display display = getWindowManager().getDefaultDisplay();
 		
 		this.width = display.getWidth();
@@ -82,6 +85,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			// send selected file to selected PC
 			try 
 			{
+				Log.d("sending", "sending File");
 				scanner.send.sendFile(file.getAbsolutePath(), file.length(), name, width, height);
 			}
 			catch (IOException e) 
@@ -99,9 +103,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			// Extract zip files to a directory.
 			Thread thread = new Thread(new ZipExtractor(file.getAbsolutePath(), extractionDirectory.getAbsolutePath()));
 			thread.start();
-			thread.join();
-		 
-		
+			thread.join();	
 		
 			this.board = new DrawingBoard(getBaseContext(), name, extractionDirectory, this.width, this.height, this.scanner);
 			this.board.setOnTouchListener(board);
@@ -127,7 +129,27 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 	{
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.make_connection, menu);
+		itemGroup = (MenuItem)findViewById(R.id.drawing_group);
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		super.onPrepareOptionsMenu(menu);
+	
+		if(!board.isWhiteBoardEnabled())
+		{
+			if(!menu.findItem(R.id.black).isChecked())
+				menu.findItem(R.id.black).setChecked(true);			
+			
+			menu.setGroupEnabled(R.id.drawing_group, false);
+		}
+		else
+		{
+				menu.setGroupEnabled(R.id.drawing_group, true);
+		}
+		return true;
 	}
 	
 	@Override
@@ -248,7 +270,6 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 	{
 		try
 		{
-			MakeConnection.flag = false;	
 			scanner.send.sendMessage("$$CLOSEPROJECTION$$");
 			super.onBackPressed();
 		} 
@@ -475,6 +496,7 @@ class DrawingBoard extends View implements OnTouchListener
 	public void setWhiteBoardEnabled()
 	{
 		whiteBoardEnabled = true;
+		this.setColor("black");
 		scanner.send.sendMessage("$$OPENWHITEBOARD$$");
 		Toast.makeText(context, "Drawing Enabled", Toast.LENGTH_SHORT).show();
 		invalidate();

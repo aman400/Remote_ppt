@@ -8,7 +8,8 @@
     
     <group
 		android:id="@+id/drawing_group"
-	    android:checkableBehavior="single" >
+	    android:checkableBehavior="single"
+	    android:enabled="true" >
 	    
 	    <item 
 	        android:id="@+id/eraser" 
