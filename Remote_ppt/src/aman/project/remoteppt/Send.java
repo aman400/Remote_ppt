@@ -7,23 +7,18 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import android.util.Log;
-import android.view.Display;
-
 //class that handles message sending.
 public class Send implements Runnable
 {
 	
 	private ObjectOutputStream oos;
 	private BufferedReader br;
-	private Socket sock;
 	
 	// Constructor for class
 	Send(Socket sock)
 	{
 		try
 		{
-			this.sock = sock;
 			this.oos = new ObjectOutputStream(sock.getOutputStream());
 			this.br = new BufferedReader(new InputStreamReader(System.in));
 		}
@@ -93,9 +88,6 @@ public class Send implements Runnable
 		try
 		{
 			this.sendMessage("$$SENDINGPOINTS$$");
-			Log.d("getx", point.getX()+"");
-			Log.d("gety", point.getY()+"");
-			Log.d("getcolor", point.getColor());
 			
 			this.oos.writeFloat(point.getX());
 			oos.flush();

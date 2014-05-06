@@ -74,7 +74,7 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog) 
 	{
-		Intent in = new Intent(getBaseContext(), MakeConnection.class);
+		Intent in = new Intent(getBaseContext(), PresetationViewer.class);
 		in.putExtra("IP", this.ip);
 		in.putExtra("item", files[itemClicked]);
 		startActivity(in);

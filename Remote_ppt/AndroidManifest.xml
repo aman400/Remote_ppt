@@ -42,6 +42,9 @@
             android:label="@string/title_activity_make_connection"
             android:screenOrientation="landscape" >
         </activity>
+        <activity 
+            android:name="aman.project.remoteppt.PresetationViewer" >
+        </activity>
     </application>
 
 </manifest>
