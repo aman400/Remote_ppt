@@ -30,10 +30,18 @@
             android:label="@string/title_activity_server_scanner" >
         </activity>
         <activity
+            android:name="aman.project.remoteppt.Board"
+            android:label="@string/title_activity_board" >
+        </activity>
+        <activity
             android:name="aman.project.remoteppt.FileViewer"
             android:label="@string/title_activity_file_viewer" >
         </activity>
-        
+        <activity
+            android:name="aman.project.remoteppt.MakeConnection"
+            android:label="@string/title_activity_make_connection"
+            android:screenOrientation="landscape" >
+        </activity>
         <activity 
             android:name="aman.project.remoteppt.PresetationViewer" >
         </activity>
