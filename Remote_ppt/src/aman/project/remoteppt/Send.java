@@ -70,7 +70,7 @@ public class Send implements Runnable
 		}
 	}
 	
-	public void sendlong(long data)
+	public void sendLong(long data)
 	{
 		try 
 		{
@@ -103,28 +103,28 @@ public class Send implements Runnable
 		}
 	}
 	
-	public void sendFile(String path, long length, String fileName, int width, int height) throws IOException
+	public void sendInt(int number)
 	{
 		try
 		{
-			oos.writeBytes("$$PROJECT$$\r\n");
+			oos.writeInt(number);
 			oos.flush();
-			oos.writeInt(width);
-			oos.flush();
-			oos.writeInt(height);
-			oos.flush();
-			oos.writeBytes(fileName+"\r\n");
-			oos.flush();
-			oos.writeLong(length);
-			oos.flush();
-			
-			Thread th = new Thread(new FileTransfer(path, oos));
-			th.start();
-			
 		}
 		catch(IOException ex)
 		{
 			ex.printStackTrace();
 		}
+	}
+	
+	public void sendFile(String path, long length, String fileName, int width, int height) throws IOException
+	{
+			this.sendMessage("$$PROJECT$$");
+			this.sendInt(width);
+			this.sendInt(height);
+			this.sendMessage(fileName);
+			this.sendLong(length);
+			
+			Thread th = new Thread(new FileTransfer(path, oos));
+			th.start();
 	}
 }
