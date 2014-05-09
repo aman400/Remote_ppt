@@ -36,6 +36,9 @@
     <string name="magenta">Magenta</string>
     <string name="whiteboard">Whiteboard</string>
     <string name="title_activity_presetation_viewer">PresetationViewer</string>
-    <string name="hello_world">Hello world!</string>
-
+	<string name="shutdown">Shutdown</string>
+	<string name="restart">Restart</string>
+	<string name="logoff">Log Out</string>
+	<string name="hibernate">Hibernate</string>
+	
 </resources>

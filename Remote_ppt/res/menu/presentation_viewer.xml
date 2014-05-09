@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/whiteboard"
+        android:title="@string/whiteboard"
+        android:showAsAction="always" >
+    </item>
+    
+     <item 
+	        android:id="@+id/undo" 
+	        android:title="@string/eraser"
+	        android:showAsAction="always"
+	        android:icon="@drawable/eraser" >
+	 </item>
+	    
+    <group
+		android:id="@+id/drawing_group"
+	    android:checkableBehavior="single"
+	    android:enabled="true" >
+	    
+	    <item
+	        android:id="@+id/red"
+	        android:title="@string/red"
+	        android:orderInCategory="1"
+	        android:showAsAction="never" >
+	    </item>
+	    
+	    <item
+	        android:id="@+id/blue"
+	        android:title="@string/blue"
+	        android:orderInCategory="1"
+	        android:showAsAction="never" />
+	    
+	    <item
+	        android:id="@+id/green"
+	        android:title="@string/green"
+	        android:orderInCategory="1"
+	        android:showAsAction="never" />
+	    
+	    <item
+	        android:id="@+id/white"
+	        android:title="@string/white"
+	        android:orderInCategory="1"
+	        android:showAsAction="never" />
+	    
+	    <item
+	        android:id="@+id/black"
+	        android:title="@string/black"
+	        android:orderInCategory="1"
+	        android:checked="true"
+	        android:showAsAction="never" />
+	    
+	    <item
+	        android:id="@+id/yellow"
+	        android:title="@string/yellow"
+	        android:orderInCategory="1"
+	        android:showAsAction="never" />
+	    
+	    <item
+	        android:id="@+id/cyan"
+	        android:title="@string/cyan"
+	        android:orderInCategory="1"
+	        android:showAsAction="never" />
+	    
+	    <item
+	        android:id="@+id/gray"
+	        android:title="@string/gray"
+	        android:orderInCategory="1"
+	        android:showAsAction="never" />
+	    
+	    <item
+	        android:id="@+id/magenta"
+	        android:title="@string/magenta"
+	        android:orderInCategory="1"
+	        android:showAsAction="never" />
+    </group>
+
+</menu>

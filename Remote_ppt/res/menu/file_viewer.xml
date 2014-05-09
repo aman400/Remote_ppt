@@ -4,8 +4,19 @@
     tools:context="aman.project.remoteppt.FileViewer" >
 
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"/>
-
+        android:id="@+id/shutdown"
+        android:title="@string/shutdown"/>
+    
+    <item 
+        android:id="@+id/restart"
+        android:title="@string/restart"/>
+    
+    <item 
+        android:id="@+id/logoff"
+        android:title="@string/logoff"/>
+    
+    <item 
+        android:id="@+id/hibernate"
+        android:title="@string/hibernate"/> 
+         
 </menu>
