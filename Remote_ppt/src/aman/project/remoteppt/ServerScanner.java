@@ -3,6 +3,7 @@ package aman.project.remoteppt;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -22,6 +23,7 @@ public class ServerScanner extends Activity
 	private ServerListAdapter adapter;
 	private ListView list;
 	static UpdateGUI update;
+	ProgressDialog  dialog;
 
 	protected void onCreate(Bundle savedInstance)
 	{
@@ -61,6 +63,11 @@ public class ServerScanner extends Activity
 
 		});
 		
+		dialog = new ProgressDialog(this);
+		dialog.setIndeterminate(true);
+		dialog.setMessage("Scanning");
+		dialog.setCancelable(true);
+		dialog.show();
 		new Thread(new Runnable()
 		{
 			public void run()
@@ -105,6 +112,7 @@ public class ServerScanner extends Activity
 						}
 					}
 					update.sendEmptyMessage(99);
+					dialog.dismiss();
 				}
 		}).start();
 	}
