@@ -3,6 +3,7 @@ package aman.project.remoteppt;
 import java.io.File;
 import java.util.ArrayList;
 
+import android.app.Presentation;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -92,8 +93,7 @@ class DrawingBoard extends View implements OnTouchListener
 					canvas.drawLine(points.get(i).getX(), points.get(i).getY(), points.get(i + 1).getX(), points.get(i + 1).getY(), paint);	
 				}
 			}
-		}
-		
+		}		
 	}
 	
 	@Override
@@ -143,6 +143,7 @@ class DrawingBoard extends View implements OnTouchListener
 				
 				case MotionEvent.ACTION_DOWN :
 				{
+					PresetationViewer.updateGUI.sendEmptyMessage(10);
 					this.undoPoints.add(points.size());
 					for(Integer s : this.undoPoints)
 						Log.d("undo", s+"");
