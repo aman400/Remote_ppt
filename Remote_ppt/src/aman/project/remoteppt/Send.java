@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import android.util.Log;
+
 //class that handles message sending.
 public class Send implements Runnable
 {
@@ -88,7 +90,7 @@ public class Send implements Runnable
 		try
 		{
 			this.sendMessage("$$SENDINGPOINTS$$");
-			
+			Log.d("debug", "sending file");
 			this.oos.writeFloat(point.getX());
 			oos.flush();
 			
@@ -116,15 +118,15 @@ public class Send implements Runnable
 		}
 	}
 	
-	public void sendFile(String path, long length, String fileName, int width, int height) throws IOException
+	public void sendFile(String path, long length, String fileName, int width, int height) throws IOException, InterruptedException
 	{
-			this.sendMessage("$$PROJECT$$");
-			this.sendInt(width);
-			this.sendInt(height);
-			this.sendMessage(fileName);
-			this.sendLong(length);
+		this.sendMessage("$$PROJECT$$");
+		this.sendInt(width);
+		this.sendInt(height);
+		this.sendMessage(fileName);
+		this.sendLong(length);
 			
-			Thread th = new Thread(new FileTransfer(path, oos));
-			th.start();
+		Thread th = new Thread(new FileTransfer(path, oos));
+		th.start();
 	}
 }

@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,10 +26,13 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 	private Scanner scanner;
 	private int width, height;
 	static boolean presentationRunning;
+	static MyHandler updateGUI;
 	
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		
+		updateGUI = new MyHandler();
 		
 		// get Data from previous activity
 		Intent in = getIntent();
@@ -82,8 +87,13 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 				catch (IOException e) 
 				{
 					e.printStackTrace();
+					super.onBackPressed();
 				}
-					
+				catch(InterruptedException exception)
+				{
+					exception.printStackTrace();
+					super.onBackPressed();
+				}
 				// Extraction Directory path
 				extractionDirectory = new File(Environment.getExternalStorageDirectory().getPath() + 
 											File.separatorChar + "Droid Drow" + File.separatorChar + "Extracted Files");			
@@ -289,5 +299,17 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 	public void onDialogNegetiveClick(DialogFragment dialog) 
 	{
 		dialog.dismiss();
-	}	
+	}
+	
+	class MyHandler extends Handler
+	{
+		@Override
+		public void handleMessage(Message message)
+		{
+			if(message.what == 10)
+			{
+				invalidateOptionsMenu();
+			}
+		}
+	}
 }
