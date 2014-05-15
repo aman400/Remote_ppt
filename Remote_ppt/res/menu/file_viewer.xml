@@ -4,6 +4,10 @@
     tools:context="aman.project.remoteppt.FileViewer" >
 
     <item
+        android:id="@+id/stop_desktop_app"
+        android:title="@string/stop_desktop_app" />
+	    
+    <item
         android:id="@+id/shutdown"
         android:title="@string/shutdown"/>
     

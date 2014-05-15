@@ -3,21 +3,21 @@
     <item
         android:id="@+id/whiteboard"
         android:title="@string/whiteboard"
-        android:showAsAction="always" >
+        android:showAsAction="ifRoom" 
+        android:icon="@drawable/board">
     </item>
     
-     <item 
-	        android:id="@+id/undo" 
-	        android:title="@string/eraser"
-	        android:showAsAction="always"
-	        android:icon="@drawable/eraser" >
-	 </item>
-	    
+    <item 
+        android:id="@+id/undo" 
+        android:title="@string/eraser"
+        android:showAsAction="ifRoom"
+        android:icon="@drawable/eraser" >
+	</item>
+
     <group
 		android:id="@+id/drawing_group"
 	    android:checkableBehavior="single"
 	    android:enabled="true" >
-	    
 	    <item
 	        android:id="@+id/red"
 	        android:title="@string/red"
@@ -47,7 +47,6 @@
 	        android:id="@+id/black"
 	        android:title="@string/black"
 	        android:orderInCategory="1"
-	        android:checked="true"
 	        android:showAsAction="never" />
 	    
 	    <item
