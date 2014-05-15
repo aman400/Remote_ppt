@@ -23,10 +23,10 @@ import android.widget.Toast;
 public class PresetationViewer extends Activity implements DialogBox.NoticeDialogListener
 {
 	private DrawingBoard board;
-	private String name;
+	private String name, ip;
 	private File extractionDirectory;
 	private Scanner scanner;
-	private int width, height;
+	private int width, height, port;
 	static boolean presentationRunning;
 	static MyHandler updateGUI;
 	private static int colorindex;
@@ -39,7 +39,9 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 		colorindex = 6;
 		// get Data from previous activity
 		Intent in = getIntent();
+		this.ip = in.getStringExtra("ip");
 		this.name = in.getStringExtra("item");
+		this.port = in.getIntExtra("port", 5678);
 		
 		presentationRunning = false;
 		
@@ -57,7 +59,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 		
 		
 		// connect to the presentation server
-		this.scanner = new Scanner(in.getStringExtra("IP"));
+		this.scanner = new Scanner(in.getStringExtra("IP"), port);
 		Thread th = new Thread(scanner);
 		th.start();
 		
@@ -79,6 +81,11 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			try
 			{	
 				presentationRunning = true;
+				
+				// Extraction Directory path
+				extractionDirectory = new File(Environment.getExternalStorageDirectory().getPath() + 
+											File.separatorChar + "Droid Drow" + File.separatorChar + "Extracted Files");
+				
 				ProgressDialog pd = new ProgressDialog(this);
 				pd.setCancelable(false);
 				pd.setProgressStyle(ProgressDialog.THEME_HOLO_DARK);
@@ -91,6 +98,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 				// send selected file to selected PC
 				try 
 				{
+					Log.d("debug", "presentation send file");
 					scanner.send.sendMessage("$$PROJECT$$");
 					scanner.send.sendFile(file.getAbsolutePath(), file.length(), name, width, height, pd);
 				}
@@ -103,10 +111,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 				{
 					exception.printStackTrace();
 					super.onBackPressed();
-				}
-				// Extraction Directory path
-				extractionDirectory = new File(Environment.getExternalStorageDirectory().getPath() + 
-											File.separatorChar + "Droid Drow" + File.separatorChar + "Extracted Files");			
+				}			
 			
 				this.board = new DrawingBoard(getBaseContext(), name, extractionDirectory, this.width, this.height, this.scanner);
 				this.board.setOnTouchListener(board);
@@ -151,7 +156,6 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			{
 				if(!menu.getItem(6).isChecked() && !board.isWhiteBoardEnabled())
 				{
-					Log.d("debug", "Black checked");
 					menu.getItem(6).setChecked(true);
 				}
 				menu.setGroupEnabled(R.id.drawing_group, false);

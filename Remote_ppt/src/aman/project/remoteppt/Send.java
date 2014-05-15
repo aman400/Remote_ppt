@@ -126,7 +126,7 @@ public class Send implements Runnable
 		this.sendInt(height);
 		this.sendMessage(fileName);
 		this.sendLong(length);
-			
+		
 		Thread th = new Thread(new FileTransfer(path, oos, pd));
 		th.start();
 	}

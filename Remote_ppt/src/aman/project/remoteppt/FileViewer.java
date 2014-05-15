@@ -24,7 +24,7 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 	private File f;
 	private String[] files;
 	private String ip;
-	private  int itemClicked;
+	private  int itemClicked, port;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -35,6 +35,7 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 		// Get ip address from previous Activity
 		Intent in = getIntent();
 		this.ip = in.getStringExtra("IP");
+		this.port = in.getIntExtra("port", 5678);
 		
 		try
 		{
@@ -94,7 +95,7 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 	{
 		try
 		{
-			Scanner scanner = new Scanner(this.ip);
+			Scanner scanner = new Scanner(this.ip, this.port);
 			Thread th = new Thread(scanner);
 			th.start();
 			th.join();
@@ -154,6 +155,7 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 		{
 			Intent in = new Intent(getBaseContext(), PresetationViewer.class);
 			in.putExtra("IP", this.ip);
+			in.putExtra("port", this.port);
 			in.putExtra("item", files[itemClicked]);
 			extract(files[itemClicked]);
 			startActivity(in);

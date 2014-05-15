@@ -17,15 +17,15 @@ public class Scanner implements Runnable
 	Receive receive;
 	private ArrayList<Server> serverList;
 	
-	Scanner(String ip)
+	Scanner(String ip, int port)
 	{
 		this.ip = ip;
 		this.port = 5678;
 	}
 	
-	Scanner(String ip, ArrayList<Server> serverList, String message)
+	Scanner(String ip, ArrayList<Server> serverList, String message, int port)
 	{
-		this(ip);
+		this(ip, port);
 		this.serverList = serverList;
 		this.message = message;
 	}
