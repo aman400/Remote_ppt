@@ -20,7 +20,8 @@
         
         <activity
             android:name="aman.project.remoteppt.ServerScanner"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" 
+            android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +31,8 @@
         
         <activity
             android:name="aman.project.remoteppt.FileViewer"
-            android:label="@string/title_activity_file_viewer" >
+            android:label="@string/title_activity_file_viewer"
+            android:configChanges="orientation" >
         </activity>
         
         <activity
