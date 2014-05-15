@@ -63,13 +63,13 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 			{
 				dialog = new DialogBox();
 				FileViewer.this.itemClicked = index;
-				Bundle b = new Bundle();
-				b.putString("Title", getString(R.string.dialog_title));
-				b.putString("Message", getString(R.string.dialog_message));
-				b.putString("YES", getString(R.string.positive_button));
-				b.putString("NO", getString(R.string.negetive_button));
+				Bundle bundle = new Bundle();
+				bundle.putString("Title", getString(R.string.dialog_title));
+				bundle.putString("Message", getString(R.string.dialog_message));
+				bundle.putString("YES", getString(R.string.positive_button));
+				bundle.putString("NO", getString(R.string.negetive_button));
 				
-				dialog.setArguments(b);
+				dialog.setArguments(bundle);
 				dialog.show(getFragmentManager(), "message");
 			}
 
@@ -89,8 +89,17 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 	{
 		try
 		{
+			Scanner scanner = new Scanner(this.ip);
+			Thread th = new Thread(scanner);
+			th.start();
+			th.join();
+			
 			switch(item.getItemId())
 			{
+				case R.id.stop_desktop_app:
+					scanner.send.sendMessage("$$STOPDESKTOPAPP$$");
+					super.onBackPressed();
+					return true;
 				case R.id.shutdown:
 					scanner.send.sendMessage("$$SHUTDOWN$$");
 					return true;
@@ -109,7 +118,11 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 		}
 		catch(NullPointerException exception)
 		{
-			connectionError();
+			Toast.makeText(getApplicationContext(), "Desktop Application Not Running", Toast.LENGTH_SHORT).show();
+		}
+		catch(InterruptedException exception)
+		{
+			Toast.makeText(getApplicationContext(), "Desktop Application Not Running", Toast.LENGTH_SHORT).show();
 		}
 		return super.onOptionsItemSelected(item);
 	}
