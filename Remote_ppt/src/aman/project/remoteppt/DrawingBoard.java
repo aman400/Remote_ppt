@@ -81,6 +81,8 @@ class DrawingBoard extends View implements OnTouchListener
 		invalidate();
 	}
 	
+	
+	// Draw image on canvas
 	@Override
 	public void onDraw(Canvas canvas)
 	{
@@ -101,6 +103,8 @@ class DrawingBoard extends View implements OnTouchListener
 		}		
 	}
 	
+	
+	// Handle touch events
 	@Override
 	public boolean onTouch(View v, MotionEvent event) 
 	{
@@ -186,6 +190,7 @@ class DrawingBoard extends View implements OnTouchListener
 		}
 	}
 	
+	// show next image
 	public void incrementIndex()
 	{
 		if(index < slidesPath.size() - 1)
@@ -201,6 +206,7 @@ class DrawingBoard extends View implements OnTouchListener
 		
 	}
 	
+	// Show previous image
 	public void decrementIndex()
 	{
 		if(index > 0)
@@ -215,12 +221,14 @@ class DrawingBoard extends View implements OnTouchListener
 		}
 	}
 	
+	// clear all drawing points list
 	public void clearPointsList()
 	{
 		points.clear();
 		undoPoints.clear();
 	}
 	
+	// Check to see if there was a left of right swipe
 	public void checkSwipeAction(float x1, float x2)
 	{
 		
@@ -235,6 +243,7 @@ class DrawingBoard extends View implements OnTouchListener
 		}
 	}
 	
+	// Turn on White Baord
 	public void setWhiteBoardEnabled()
 	{
 		whiteBoardEnabled = true;
@@ -243,6 +252,7 @@ class DrawingBoard extends View implements OnTouchListener
 		invalidate();
 	}
 	
+	// Turn off white Board
 	public void setWhiteBoardDisabled()
 	{
 		whiteBoardEnabled = false;
@@ -253,17 +263,19 @@ class DrawingBoard extends View implements OnTouchListener
 		invalidate();
 	}
 	
-	
+	// set paint color
 	public void setColor(String color)
 	{
 		this.color = color;
 	}
 	
+	// Check to see if White Board is enabled
 	public boolean isWhiteBoardEnabled()
 	{
 		return whiteBoardEnabled;
 	}
 	
+	// Get sublist for a list
 	public void sublist(int start, int end)
 	{
 		this.points = new ArrayList<PointHandler>(points.subList(start, end));
@@ -277,11 +289,13 @@ class DrawingBoard extends View implements OnTouchListener
 		invalidate();
 	}
 	
+	// Get size of drawing points list
 	public int getUndoPointsSize()
 	{
 		return undoPoints.size();
 	}
 	
+	// Get last point form the list
 	public int getLastUndoPoint()
 	{
 		return undoPoints.get(undoPoints.size() - 1);
