@@ -5,16 +5,20 @@ import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import android.app.ProgressDialog;
+
 public class FileTransfer implements Runnable
 {
 	private byte[] buffer;
 	private FileInputStream fis;
 	private ObjectOutputStream oos;
+	private ProgressDialog pd;
 	
-	FileTransfer(String path, ObjectOutputStream oos)
+	FileTransfer(String path, ObjectOutputStream oos, ProgressDialog pd)
 	{
 		try
 		{
+			this.pd = pd;
 			this.buffer = new byte[102400];
 			this.oos = oos;
 			this.fis = new FileInputStream(path);
@@ -39,6 +43,7 @@ public class FileTransfer implements Runnable
 					oos.flush();
 				}
 				fis.close();
+				pd.dismiss();
 			}
 			catch(EOFException exception)
 			{
