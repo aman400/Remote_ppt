@@ -1,9 +1,9 @@
 package aman.project.remoteppt;
 
+
 import java.io.File;
 import java.util.ArrayList;
 
-import android.app.Presentation;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,6 +32,11 @@ class DrawingBoard extends View implements OnTouchListener
 	private ArrayList<PointHandler> points;
 	private Context context;
 	private ArrayList<Integer> undoPoints;
+	
+	public DrawingBoard(Context context)
+	{
+		super(context);
+	}
 
 	public DrawingBoard(Context context, String name, File extractionDirectory, int width, int height, Scanner scanner) 
 	{
@@ -247,6 +252,7 @@ class DrawingBoard extends View implements OnTouchListener
 		Toast.makeText(context, "Swipe Enabled", Toast.LENGTH_SHORT).show();
 		invalidate();
 	}
+	
 	
 	public void setColor(String color)
 	{
