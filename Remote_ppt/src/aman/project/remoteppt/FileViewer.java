@@ -25,27 +25,32 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 	private String[] files;
 	private String ip;
 	private  int itemClicked;
-	private Scanner scanner;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.file_viewer);
+		
+		// Get ip address from previous Activity
 		Intent in = getIntent();
 		this.ip = in.getStringExtra("IP");
 		
 		try
 		{
 			f = new File(Environment.getExternalStorageDirectory().getPath()+File.separatorChar+"Droid Drow"+File.separatorChar+"Files");
-			Log.d("path", f.getAbsolutePath());
+
 			files = f.list();
 		}
 		catch(Exception ex)
 		{
 			ex.printStackTrace();
 		}
+		
+		// create adapter for listing files
 		ListFilesAdapter myAdapter = new ListFilesAdapter(files);
+		
+		// get list view and add adapter to it
 		lv = (ListView)(findViewById(R.id.ziplist));
 		lv.setAdapter(myAdapter);
 	}
@@ -94,24 +99,30 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 			th.start();
 			th.join();
 			
+			// get selected item from menu and take action accordingly
 			switch(item.getItemId())
 			{
 				case R.id.stop_desktop_app:
 					scanner.send.sendMessage("$$STOPDESKTOPAPP$$");
 					super.onBackPressed();
 					return true;
+					
 				case R.id.shutdown:
 					scanner.send.sendMessage("$$SHUTDOWN$$");
 					return true;
+					
 				case R.id.restart:
 					scanner.send.sendMessage("$$RESTART$$");
 					return true;
+					
 				case R.id.logoff:
 					scanner.send.sendMessage("$$LOGOFF$$");
 					return true;
+					
 				case R.id.hibernate:
 					scanner.send.sendMessage("$$HIBERNATE$$");
 					return true;
+					
 				default:
 					return super.onOptionsItemSelected(item);
 			}
@@ -127,11 +138,15 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 		return super.onOptionsItemSelected(item);
 	}
 	
+	
+	// This function is called upon error in network connection
 	public void connectionError()
 	{
 		Toast.makeText(getBaseContext(), "Desktop application not Running", Toast.LENGTH_SHORT).show();
 		super.onBackPressed();
 	}
+	
+	
 	@Override
 	public void onDialogPositiveClick(DialogFragment dialog) 
 	{	
@@ -156,6 +171,8 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 		dialog.dismiss();
 	}
 	
+	
+	// This function is used to extract files to a fixed directory
 	public void extract(String name) throws InterruptedException
 	{
 		File file = new File(Environment.getExternalStorageDirectory().getPath() + 
