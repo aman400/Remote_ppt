@@ -6,12 +6,14 @@ import java.io.IOException;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,13 +29,14 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 	private int width, height;
 	static boolean presentationRunning;
 	static MyHandler updateGUI;
+	private static int colorindex;
 	
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		
 		updateGUI = new MyHandler();
-		
+		colorindex = 6;
 		// get Data from previous activity
 		Intent in = getIntent();
 		this.name = in.getStringExtra("item");
@@ -74,15 +77,22 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 		if(!presentationRunning)
 		{
 			try
-			{		
+			{	
 				presentationRunning = true;
+				ProgressDialog pd = new ProgressDialog(this);
+				pd.setCancelable(false);
+				pd.setProgressStyle(ProgressDialog.THEME_HOLO_DARK);
+				pd.setIndeterminate(true);
+				pd.setMessage("Preparing desktop...");
+				pd.show();
 				File file = new File(Environment.getExternalStorageDirectory().getPath() + 
 						File.separatorChar + "Droid Drow" + File.separatorChar + "Files" + File.separatorChar + name);
 		
 				// send selected file to selected PC
 				try 
 				{
-					scanner.send.sendFile(file.getAbsolutePath(), file.length(), name, width, height);
+					scanner.send.sendMessage("$$PROJECT$$");
+					scanner.send.sendFile(file.getAbsolutePath(), file.length(), name, width, height, pd);
 				}
 				catch (IOException e) 
 				{
@@ -105,11 +115,16 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			}
 			catch(NullPointerException ex)
 			{
-				ex.printStackTrace();
-				Toast.makeText(getBaseContext(), "Desktop Appliction not Running", Toast.LENGTH_SHORT).show();
-				super.onBackPressed();
+				this.connectionError();
 			}
 		}
+	}
+	
+	public void connectionError()
+	{
+		Toast.makeText(getBaseContext(), "Desktop application not Running", Toast.LENGTH_SHORT).show();
+		new Thread(new Cleanup(extractionDirectory.getAbsolutePath())).start();
+		super.onBackPressed();
 	}
 	
 	@Override
@@ -125,16 +140,22 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
 		try
-		{
+		{			
 			if(board.isWhiteBoardEnabled())
 			{
 				menu.setGroupEnabled(R.id.drawing_group, true);
+				menu.getItem(colorindex).setChecked(true);
 			}
+			
 			else
 			{
-				if(!menu.getItem(6).isChecked())
+				if(!menu.getItem(6).isChecked() && !board.isWhiteBoardEnabled())
+				{
+					Log.d("debug", "Black checked");
 					menu.getItem(6).setChecked(true);
+				}
 				menu.setGroupEnabled(R.id.drawing_group, false);
+				menu.getItem(1).setEnabled(false);
 			}
 			
 			if(board.getUndoPointsSize() > 0)
@@ -168,10 +189,12 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 				{
 					board.setWhiteBoardDisabled();
 				}
-				else
+				else if(!board.isWhiteBoardEnabled())
 				{
 					board.setWhiteBoardEnabled();
+					colorindex = 6;
 				}
+				invalidateOptionsMenu();
 				return true;
 			}
 			
@@ -183,9 +206,13 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 					scanner.send.sendInt(board.getLastUndoPoint());
 					board.undo();
 				}
+				catch(ArrayIndexOutOfBoundsException exception)
+				{
+					invalidateOptionsMenu();
+				}
 				catch(NullPointerException ex)
 				{
-					ex.printStackTrace();
+					invalidateOptionsMenu();
 				}
 				
 				invalidateOptionsMenu();
@@ -196,12 +223,14 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			{
 				board.setColor("black");
 				item.setChecked(true);
+				colorindex = 6;
 				return true;
 			}
 			case R.id.red:
 			{
 				board.setColor("red");
 				item.setChecked(true);
+				colorindex = 2;
 				return true;
 			}
 			
@@ -209,6 +238,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			{
 				board.setColor("blue");
 				item.setChecked(true);
+				colorindex = 3;
 				return true;
 			}
 			
@@ -216,6 +246,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			{
 				board.setColor("green");
 				item.setChecked(true);
+				colorindex = 4;
 				return true;
 			}
 			
@@ -223,6 +254,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			{
 				board.setColor("white");
 				item.setChecked(true);
+				colorindex = 5;
 				return true;
 			}
 			
@@ -230,6 +262,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			{
 				board.setColor("yellow");
 				item.setChecked(true);
+				colorindex = 7;
 				return true;
 			}
 			
@@ -237,6 +270,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			{
 				board.setColor("cyan");
 				item.setChecked(true);
+				colorindex = 8;
 				return true;
 			}
 			
@@ -244,6 +278,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			{
 				board.setColor("gray");
 				item.setChecked(true);
+				colorindex = 9;
 				return true;
 			}
 			
@@ -251,6 +286,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 			{
 				board.setColor("magenta");
 				item.setChecked(true);
+				colorindex = 10;
 				return true;
 			}
 			default:
