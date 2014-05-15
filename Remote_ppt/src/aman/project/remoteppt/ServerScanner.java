@@ -9,12 +9,12 @@ import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -29,11 +29,12 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 {
 	private String network, ip;
 	private final int port = 5678;
-	private ArrayList<Server> serverList;
+	private static ArrayList<Server> serverList;
 	private ServerListAdapter adapter;
 	private ListView list;
 	static UpdateGUI update;
-	ProgressDialog  dialog;
+	private ProgressDialog  dialog;
+	private Thread scanningThread;
 
 	protected void onCreate(Bundle savedInstance)
 	{
@@ -42,43 +43,6 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 		setProgressBarIndeterminateVisibility(true); 
 		
 		this.setContentView(R.layout.activity_server_list);
-		
-		WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
-		Method[] wmMethods = wifi.getClass().getDeclaredMethods();
-		for(Method method: wmMethods)
-		{
-			if(method.getName().equals("isWifiApEnabled")) 
-			{
-
-				try 
-				{
-					if((Boolean)method.invoke(wifi))
-					{
-						this.ip = "192.168.43.1";
-					}
-					else
-					{
-						this.ip = Formatter.formatIpAddress(wifi.getConnectionInfo().getIpAddress());
-					}
-		
-				}
-				catch (IllegalArgumentException e) 
-				{
-					e.printStackTrace();
-				} 
-				catch (IllegalAccessException e) 
-				{
-					e.printStackTrace();
-				} 
-				catch (InvocationTargetException e) 
-				{
-					e.printStackTrace();
-				}
-
-	     	}
-		}
-		
-		this.network = ip.substring(0, ip.lastIndexOf("."));
 		
 		ServerScanner.update = new UpdateGUI();
 		serverList = new ArrayList<Server>();	
@@ -101,6 +65,7 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 
 					Intent viewFiles = new Intent(getBaseContext(), FileViewer.class);
 					viewFiles.putExtra("IP",serverList.get(position).getServerIP());
+					viewFiles.putExtra("port", port);
 					startActivity(viewFiles);				
 			}
 			
@@ -113,62 +78,108 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 		dialog.show();
 		
 		serverList.clear();
-		new Thread(new scanningThread()).start();
+		scanningThread = new Thread(new scanningThread());
+		scanningThread.start();
 	}
 	
 	protected void onResume()
 	{
 		super.onResume();
+		serverList.clear();
+		update.sendEmptyMessage(999);
 		setProgressBarIndeterminateVisibility(true);
 	}
 	
 	class scanningThread implements Runnable
 	{
+		
+		scanningThread()
+		{
+			// Get ip address of android device
+			WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+			Method[] wmMethods = wifi.getClass().getDeclaredMethods();
+			for(Method method: wmMethods)
+			{
+				if(method.getName().equals("isWifiApEnabled")) 
+				{
+
+					try 
+					{
+						if((Boolean)method.invoke(wifi))
+						{
+							ip = "192.168.43.1";
+						}
+						else
+						{
+							ip = Formatter.formatIpAddress(wifi.getConnectionInfo().getIpAddress());
+						}
+			
+					}
+					catch (IllegalArgumentException e) 
+					{
+						e.printStackTrace();
+					} 
+					catch (IllegalAccessException e) 
+					{
+						e.printStackTrace();
+					} 
+					catch (InvocationTargetException e) 
+					{
+						e.printStackTrace();
+					}
+
+		     	}
+			}
+			
+			network = ip.substring(0, ip.lastIndexOf("."));
+		}
 		public void run()
 		{			
 			// Different threads that run to check for availability of any server 
 			Scanner[] scanners = new Scanner[25];
 			Thread[] threads = new Thread[25];
-				for(int i = 0; i < 10; i++)
+			for(int i = 0; i < 10; i++)
+			{
+				for( int j = 0; j < 25; j++)
 				{
-					for( int j = 0; j < 25; j++)
-					{
-						int host = (i * 25) + j;
-						scanners[j] = new Scanner(network+"."+ host, serverList, "$$IP&HOST$$");
-						threads[j] = new Thread(scanners[j]);
-						threads[j].start();
-					}
-					for(int j = 0; j < 25; j++)
-					{
-						try 
-						{
-							threads[j].join();
-						} 
-						catch (InterruptedException e) 
-						{
-							e.printStackTrace();
-						}
-					}
+					int host = (i * 25) + j;
+					scanners[j] = new Scanner(network+"."+ host, serverList, "$$IP&HOST$$", port);
+					threads[j] = new Thread(scanners[j]);
+					threads[j].start();
 				}
 				
-				for(int i = 250; i < 256; i++)
+				for(int j = 0; j < 25; j++)
 				{
-					Scanner scan = new Scanner(network+"." + i, serverList, "$$IP&HOST$$");
-					Thread thread = new Thread(scan);
-					thread.start();
 					try 
 					{
-						thread.join();
+						threads[j].join();
 					} 
 					catch (InterruptedException e) 
 					{
-						e.printStackTrace();
+						Thread.currentThread().interrupt();
 					}
+				}				
+					
+			}
+				
+			for(int i = 250; i < 256; i++)
+			{
+				Scanner scan = new Scanner(network+"." + i, serverList, "$$IP&HOST$$", port);
+				Thread thread = new Thread(scan);
+				thread.start();
+				try 
+				{
+					thread.join();
+				} 
+				catch (InterruptedException e) 
+				{
+					Thread.currentThread().interrupt();
 				}
-				update.sendEmptyMessage(99);				
-				update.sendEmptyMessage(12);
-			}	
-		}
+			}
+			update.sendEmptyMessage(99);				
+			update.sendEmptyMessage(12);
+		}	
+	}
 	
 	// Handler to update GUI
 	class UpdateGUI extends Handler
@@ -206,6 +217,13 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 	}
 
 	@Override
+	protected void onPause() 
+	{
+		scanningThread.interrupt();
+		Log.d("mymessage", "thread stoped");
+		super.onPause();
+	}
+	@Override
 	public void onBackPressed()
 	{
 		DialogBox dialogBox = new DialogBox();
@@ -237,18 +255,14 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 			{
 				dialog.show();
 				serverList.clear();
-				new Thread(new scanningThread()).start();
+				scanningThread = new Thread(new scanningThread());
+				scanningThread.start();
 				return true;
 			}
 			default :
 				return super.onOptionsItemSelected(item);
 		}
 		
-	}
-	@Override
-	public void onConfigurationChanged(Configuration newConfig) 
-	{
-		super.onConfigurationChanged(newConfig);
 	}
 	
 	@Override
