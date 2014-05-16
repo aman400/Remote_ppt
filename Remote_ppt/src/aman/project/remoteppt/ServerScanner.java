@@ -39,21 +39,23 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 	protected void onCreate(Bundle savedInstance)
 	{
 		super.onCreate(savedInstance);
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);  
-		setProgressBarIndeterminateVisibility(true); 
-		
-		this.setContentView(R.layout.activity_server_list);
-		
-		ServerScanner.update = new UpdateGUI();
-		serverList = new ArrayList<Server>();	
+		this.setContentView(R.layout.activity_server_list);	
 	}
 	
 	protected void onStart()
 	{
-		super.onStart();
-
+		super.onStart();	
+	}
+	
+	protected void onResume()
+	{
+		super.onResume();
+		
+		serverList = new ArrayList<Server>();
+		ServerScanner.update = new UpdateGUI();
 		list = (ListView)(findViewById(R.id.list_of_servers));
 		adapter = new ServerListAdapter(serverList);
+		list.setAdapter(adapter);
 		list.setOnItemClickListener(new OnItemClickListener()
 		{
 
@@ -75,19 +77,11 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 		dialog.setIndeterminate(true);
 		dialog.setMessage("Scanning...");
 		dialog.setCancelable(true);
+		dialog.setProgressStyle(ProgressDialog.THEME_HOLO_DARK);
 		dialog.show();
 		
-		serverList.clear();
 		scanningThread = new Thread(new scanningThread());
 		scanningThread.start();
-	}
-	
-	protected void onResume()
-	{
-		super.onResume();
-		serverList.clear();
-		update.sendEmptyMessage(999);
-		setProgressBarIndeterminateVisibility(true);
 	}
 	
 	class scanningThread implements Runnable
@@ -133,6 +127,7 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 			
 			network = ip.substring(0, ip.lastIndexOf("."));
 		}
+		
 		public void run()
 		{			
 			// Different threads that run to check for availability of any server 
@@ -159,7 +154,6 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 						Thread.currentThread().interrupt();
 					}
 				}				
-					
 			}
 				
 			for(int i = 250; i < 256; i++)
@@ -174,6 +168,7 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 				catch (InterruptedException e) 
 				{
 					Thread.currentThread().interrupt();
+					return;
 				}
 			}
 			update.sendEmptyMessage(99);				
@@ -191,16 +186,10 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 			if(msg.what == 99)
 			{
 				Toast.makeText(getBaseContext(), serverList.size()+" Servers Found", Toast.LENGTH_SHORT).show();
-				setProgressBarIndeterminateVisibility(false);
 			}
 			else if(msg.what == 999)
 			{
-				if(list.getAdapter() == null)
-				{
-					list.setAdapter(adapter);
-				}
-				
-				adapter.notifyDataSetInvalidated();
+				adapter.notifyDataSetChanged();
 			}
 			else if(msg.what == 11)
 			{
@@ -220,7 +209,8 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 	protected void onPause() 
 	{
 		scanningThread.interrupt();
-		Log.d("mymessage", "thread stoped");
+		serverList.clear();
+		update.sendEmptyMessage(999);
 		super.onPause();
 	}
 	@Override
@@ -253,8 +243,10 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 		{
 			case R.id.scan:
 			{
-				dialog.show();
-				serverList.clear();
+				dialog.show();				
+				if(scanningThread.isAlive())
+					scanningThread.interrupt();
+				
 				scanningThread = new Thread(new scanningThread());
 				scanningThread.start();
 				return true;
