@@ -20,12 +20,13 @@ public class Scanner implements Runnable
 	Scanner(String ip, int port)
 	{
 		this.ip = ip;
-		this.port = 5678;
+		this.port = port;
 	}
 	
 	Scanner(String ip, ArrayList<Server> serverList, String message, int port)
 	{
-		this(ip, port);
+		this.ip = ip;
+		this.port = port;
 		this.serverList = serverList;
 		this.message = message;
 	}
