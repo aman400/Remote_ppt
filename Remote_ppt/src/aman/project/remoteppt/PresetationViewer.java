@@ -7,6 +7,8 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -23,7 +25,7 @@ import android.widget.Toast;
 public class PresetationViewer extends Activity implements DialogBox.NoticeDialogListener
 {
 	private DrawingBoard board;
-	private String name, ip;
+	private String name;
 	private File extractionDirectory;
 	private Scanner scanner;
 	private int width, height, port;
@@ -39,7 +41,6 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 		colorindex = 6;
 		// get Data from previous activity
 		Intent in = getIntent();
-		this.ip = in.getStringExtra("ip");
 		this.name = in.getStringExtra("item");
 		this.port = in.getIntExtra("port", 5678);
 		
@@ -91,7 +92,16 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 				pd.setProgressStyle(ProgressDialog.THEME_HOLO_DARK);
 				pd.setIndeterminate(true);
 				pd.setMessage("Preparing desktop...");
-				pd.show();
+				pd.setButton(ProgressDialog.BUTTON_NEGATIVE, "Cancel", new OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface arg0, int arg1) 
+					{
+						scanner.send.interruptFileTransfer();
+						PresetationViewer.this.cleanupAndExit();
+					}
+				});
+				
 				File file = new File(Environment.getExternalStorageDirectory().getPath() + 
 						File.separatorChar + "Droid Drow" + File.separatorChar + "Files" + File.separatorChar + name);
 		
@@ -101,6 +111,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 					Log.d("debug", "presentation send file");
 					scanner.send.sendMessage("$$PROJECT$$");
 					scanner.send.sendFile(file.getAbsolutePath(), file.length(), name, width, height, pd);
+					pd.show();
 				}
 				catch (IOException e) 
 				{
@@ -139,7 +150,6 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 		inflater.inflate(R.menu.presentation_viewer, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
 	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
@@ -302,14 +312,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 	public void onBackPressed()
 	{
 		DialogBox dialog = new DialogBox();
-		try
-		{
-			new Thread(new Cleanup(extractionDirectory.getAbsolutePath())).start();
-		}
-		catch(NullPointerException exception)
-		{
-			exception.printStackTrace();
-		}
+
 		Bundle bundle = new Bundle();
 		bundle.putString("Message", getString(R.string.confirm_exit));
 		bundle.putString("Title", getString(R.string.dialog_title));
@@ -327,7 +330,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 		{
 			presentationRunning = false;
 			scanner.send.sendMessage("$$CLOSEPROJECTION$$");
-			super.onBackPressed();
+			this.cleanupAndExit();
 		} 
 		catch(NullPointerException ex)
 		{
@@ -351,5 +354,11 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 				invalidateOptionsMenu();
 			}
 		}
+	}
+	
+	public void cleanupAndExit()
+	{
+		new Thread(new Cleanup(extractionDirectory.getAbsolutePath())).start();
+		super.onBackPressed();
 	}
 }
