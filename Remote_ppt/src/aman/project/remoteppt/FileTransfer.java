@@ -13,6 +13,7 @@ public class FileTransfer implements Runnable
 	private FileInputStream fis;
 	private ObjectOutputStream oos;
 	private ProgressDialog pd;
+	private static boolean sendFile;
 	
 	FileTransfer(String path, ObjectOutputStream oos, ProgressDialog pd)
 	{
@@ -22,6 +23,7 @@ public class FileTransfer implements Runnable
 			this.buffer = new byte[102400];
 			this.oos = oos;
 			this.fis = new FileInputStream(path);
+			sendFile = true;
 		}
 		catch(IOException ex)
 		{
@@ -41,10 +43,19 @@ public class FileTransfer implements Runnable
 				{
 					oos.write(buffer, 0, count);
 					oos.flush();
+					
+					if(!sendFile)
+						throw new InterruptedException();
 				}
 				fis.close();
 				pd.dismiss();
 			}
+			
+			catch(InterruptedException exception)
+			{
+				Thread.currentThread().interrupt();
+			}
+			
 			catch(EOFException exception)
 			{
 				fis.close();
@@ -54,5 +65,10 @@ public class FileTransfer implements Runnable
 		{
 			ex.printStackTrace();
 		}
+	}
+	
+	public void interruptFileTransfer()
+	{
+		sendFile = false;
 	}
 }
