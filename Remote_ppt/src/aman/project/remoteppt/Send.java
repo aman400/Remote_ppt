@@ -16,6 +16,7 @@ public class Send implements Runnable
 	
 	private ObjectOutputStream oos;
 	private BufferedReader br;
+	private FileTransfer transferFile;
 	
 	// Constructor for class
 	Send(Socket sock)
@@ -126,8 +127,13 @@ public class Send implements Runnable
 		this.sendInt(height);
 		this.sendMessage(fileName);
 		this.sendLong(length);
-		
-		Thread th = new Thread(new FileTransfer(path, oos, pd));
+		transferFile = new FileTransfer(path, oos, pd);
+		Thread th = new Thread(transferFile);
 		th.start();
+	}
+	
+	public void interruptFileTransfer()
+	{
+		transferFile.interruptFileTransfer();
 	}
 }
