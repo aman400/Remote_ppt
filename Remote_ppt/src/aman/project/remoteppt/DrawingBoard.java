@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -153,12 +154,11 @@ class DrawingBoard extends View implements OnTouchListener
 				{
 					PresetationViewer.updateGUI.sendEmptyMessage(10);
 					this.undoPoints.add(points.size());
-
+					for(Integer s : this.undoPoints)
+						Log.d("undo", s+"");
 					point = new PointHandler(event.getX(), event.getY(), this.color);
-					
 					points.add(point);
 					scanner.send.sendPoints(point);
-					
 					return true;
 				}
 				
@@ -243,7 +243,7 @@ class DrawingBoard extends View implements OnTouchListener
 		}
 	}
 	
-	// Turn on White Baord
+	// Turn on White Board
 	public void setWhiteBoardEnabled()
 	{
 		whiteBoardEnabled = true;
