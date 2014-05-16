@@ -21,7 +21,7 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 {
 	private DialogFragment dialog;
 	private ListView lv;
-	private File f;
+	private File file;
 	private String[] files;
 	private String ip;
 	private  int itemClicked, port;
@@ -39,9 +39,9 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 		
 		try
 		{
-			f = new File(Environment.getExternalStorageDirectory().getPath()+File.separatorChar+"Droid Drow"+File.separatorChar+"Files");
+			file = new File(Environment.getExternalStorageDirectory().getPath()+File.separatorChar+"Droid Drow"+File.separatorChar+"Files");
 
-			files = f.list();
+			files = file.list();
 		}
 		catch(Exception ex)
 		{
