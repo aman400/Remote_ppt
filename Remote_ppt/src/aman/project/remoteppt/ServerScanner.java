@@ -32,7 +32,7 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 	private static ArrayList<Server> serverList;
 	private ServerListAdapter adapter;
 	private ListView list;
-	static UpdateGUI update;
+	private UpdateGUI update;
 	private ProgressDialog  dialog;
 	private Thread scanningThread;
 
@@ -52,7 +52,7 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 		super.onResume();
 		
 		serverList = new ArrayList<Server>();
-		ServerScanner.update = new UpdateGUI();
+		this.update = new UpdateGUI();
 		list = (ListView)(findViewById(R.id.list_of_servers));
 		adapter = new ServerListAdapter(serverList);
 		list.setAdapter(adapter);
@@ -138,7 +138,7 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 				for( int j = 0; j < 25; j++)
 				{
 					int host = (i * 25) + j;
-					scanners[j] = new Scanner(network+"."+ host, serverList, "$$IP&HOST$$", port);
+					scanners[j] = new Scanner(network+"."+ host, serverList, "$$IP&HOST$$", port, update);
 					threads[j] = new Thread(scanners[j]);
 					threads[j].start();
 				}
@@ -158,7 +158,7 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 				
 			for(int i = 250; i < 256; i++)
 			{
-				Scanner scan = new Scanner(network+"." + i, serverList, "$$IP&HOST$$", port);
+				Scanner scan = new Scanner(network+"." + i, serverList, "$$IP&HOST$$", port, update);
 				Thread thread = new Thread(scan);
 				thread.start();
 				try 

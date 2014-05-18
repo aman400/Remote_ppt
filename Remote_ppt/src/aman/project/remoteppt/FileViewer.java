@@ -7,7 +7,8 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,6 +26,8 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 	private String[] files;
 	private String ip;
 	private  int itemClicked, port;
+	private MyHandler handler;
+	private Scanner scanner;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -36,6 +39,20 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 		Intent in = getIntent();
 		this.ip = in.getStringExtra("IP");
 		this.port = in.getIntExtra("port", 5678);
+		
+		handler = new MyHandler();
+		
+		scanner = new Scanner(this.ip, this.port, handler);
+		Thread th = new Thread(scanner);
+		th.start();
+		try
+		{
+			th.join();
+		} 
+		catch (InterruptedException e) 
+		{
+			e.printStackTrace();
+		}
 		
 		try
 		{
@@ -94,17 +111,13 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		try
-		{
-			Scanner scanner = new Scanner(this.ip, this.port);
-			Thread th = new Thread(scanner);
-			th.start();
-			th.join();
-			
+		{			
 			// get selected item from menu and take action accordingly
 			switch(item.getItemId())
 			{
 				case R.id.stop_desktop_app:
-					scanner.send.sendMessage("$$STOPDESKTOPAPP$$");
+//					scanner.send.sendMessage("$$STOPDESKTOPAPP$$");
+					handler.sendEmptyMessage(10);
 					super.onBackPressed();
 					return true;
 					
@@ -129,10 +142,6 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 			}
 		}
 		catch(NullPointerException exception)
-		{
-			Toast.makeText(getApplicationContext(), "Desktop Application Not Running", Toast.LENGTH_SHORT).show();
-		}
-		catch(InterruptedException exception)
 		{
 			Toast.makeText(getApplicationContext(), "Desktop Application Not Running", Toast.LENGTH_SHORT).show();
 		}
@@ -191,5 +200,20 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 		Thread thread = new Thread(new ZipExtractor(file.getAbsolutePath(), extractionDirectory.getAbsolutePath()));
 		thread.start();
 		thread.join();
+	}
+	
+	class MyHandler extends Handler
+	{
+		@Override
+		public void handleMessage(Message message)
+		{
+			if(message.what == 10)
+			{
+				Intent in = new Intent(getBaseContext(), DownloadFiles.class);
+				in.putExtra("ip", ip);
+				in.putExtra("port", port);
+				startActivity(in);
+			}
+		}
 	}
 }

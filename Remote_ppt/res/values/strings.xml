@@ -42,5 +42,8 @@
 	<string name="logoff">Log Out</string>
 	<string name="hibernate">Hibernate</string>
 	<string name="scan">Scan</string>
+	<string name="download_message">Do you want to download file?</string>
+	<string name="download">Download</string>
+	<string name="cancel">Cancel</string>
 	
 </resources>
