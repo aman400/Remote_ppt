@@ -14,6 +14,11 @@ public class ListFilesAdapter extends MyAdapter
 		this.tv1 = text;
 	}
 	
+	public void updateList(String[] text)
+	{
+		this.tv1 = text;
+	}
+	
 	@Override
 	public int getCount() 
 	{
@@ -41,7 +46,7 @@ public class ListFilesAdapter extends MyAdapter
 		
 		name.setText(tv1[position]);
 		ip.setText("");
-		iv.setImageResource(R.drawable.zip);
+		iv.setImageResource(R.drawable.file);
 		
 		return convertView;
 	}

@@ -21,6 +21,7 @@
     <string name="activity_destroy_message">Are you sure you want to exit?</string>
     <string name="positive_button">Yes</string>
     <string name="negetive_button">No</string>
+    <string name="neutral_button">Dismiss</string>
     <string name="dialog_title">Confirm</string>
     <string name="confirm_exit">Are you sure you want to close presentation?</string>
     <string name="image_description">image</string>
@@ -45,5 +46,10 @@
 	<string name="download_message">Do you want to download file?</string>
 	<string name="download">Download</string>
 	<string name="cancel">Cancel</string>
+	<string name="scanning">Scanning</string>
+	<string name="scanning_title">Looking for servers</string>
+	<string name="downloading">Downloading</string>
+	<string name="fetching">Fetching Files</string>
+	<string name="loading">Loading</string>
 	
 </resources>

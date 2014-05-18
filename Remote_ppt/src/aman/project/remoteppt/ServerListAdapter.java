@@ -15,6 +15,11 @@ public class ServerListAdapter extends MyAdapter
 	{
 		this.serverList = serverList;
 	}
+	
+	public void updateList(ArrayList<Server> serverList)
+	{
+		this.serverList = serverList;
+	}
 	@Override
 	public int getCount() 
 	{

@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -48,10 +47,12 @@ public class DownloadFiles extends Activity implements DialogBox.NoticeDialogLis
 		
 		pDialog = new ProgressDialog(this);
 		pDialog.setIndeterminate(true);
-		pDialog.setMessage("Fetching Files...");
+		pDialog.setIcon(R.drawable.download_blue);
+		pDialog.setProgressStyle(ProgressDialog.THEME_TRADITIONAL);
+		pDialog.setMessage(getString(R.string.fetching) +"...");
 		pDialog.setCancelable(false);
 		pDialog.show();
-		pDialog.setTitle("Loading");
+		pDialog.setTitle(getString(R.string.loading));
 		pDialog.show();
 		
 		scanner = new Scanner(ip, port, handler);
@@ -110,7 +111,8 @@ public class DownloadFiles extends Activity implements DialogBox.NoticeDialogLis
 	public void onDialogPositiveClick(DialogFragment dialog) 
 	{
 		downloadDialog = new ProgressDialog(this);
-		downloadDialog.setTitle("Downloading");
+		downloadDialog.setTitle(getString(R.string.downloading));
+		downloadDialog.setIcon(R.drawable.download_blue);
 		downloadDialog.setProgress(scanner.receive.getDownloadedLength());
 		downloadDialog.setProgressStyle(ProgressDialog.THEME_TRADITIONAL);
 		downloadDialog.show();

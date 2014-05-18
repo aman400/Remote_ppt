@@ -50,7 +50,7 @@ public class DownloadFilesAdapter extends MyAdapter
 		name.setText(myFiles.get(position).getName());
 		double size =(double)((double) (myFiles.get(position).getSize() / 1000 )/ 1024);
 		ip.setText( String.format("%.2f", size) + " MB");
-		iv.setImageResource(R.drawable.zip);
+		iv.setImageResource(R.drawable.file);
 		
 		return convertView;
 	}

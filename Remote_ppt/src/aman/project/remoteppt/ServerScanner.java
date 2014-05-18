@@ -8,6 +8,8 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -40,22 +42,18 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 	{
 		super.onCreate(savedInstance);
 		this.setContentView(R.layout.activity_server_list);	
-	}
-	
-	protected void onStart()
-	{
-		super.onStart();	
-	}
-	
-	protected void onResume()
-	{
-		super.onResume();
 		
 		serverList = new ArrayList<Server>();
 		this.update = new UpdateGUI();
 		list = (ListView)(findViewById(R.id.list_of_servers));
 		adapter = new ServerListAdapter(serverList);
 		list.setAdapter(adapter);
+	}
+	
+	protected void onStart()
+	{
+		super.onStart();
+		this.createDialog();
 		list.setOnItemClickListener(new OnItemClickListener()
 		{
 
@@ -72,16 +70,43 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 			}
 			
 		});
-		
+	}
+	
+	protected void onResume()
+	{
+		super.onResume();
+	}
+	
+	public void createDialog()
+	{
 		dialog = new ProgressDialog(this);
 		dialog.setIndeterminate(true);
-		dialog.setMessage("Scanning...");
+		dialog.setMessage(getString(R.string.scanning) + "...");
+		dialog.setIcon(R.drawable.search_blue);
+		dialog.setTitle(getString(R.string.scanning_title));
 		dialog.setCancelable(true);
 		dialog.setProgressStyle(ProgressDialog.THEME_HOLO_DARK);
-		dialog.show();
 		
-		scanningThread = new Thread(new scanningThread());
-		scanningThread.start();
+		dialog.setButton(ProgressDialog.BUTTON_NEUTRAL, getString(R.string.neutral_button), new OnClickListener() 
+		{
+			
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) 
+			{
+				dialog.dismiss();
+			}
+		});
+		
+		dialog.setButton(ProgressDialog.BUTTON_NEGATIVE, getString(R.string.cancel), new OnClickListener() 
+		{
+			
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) 
+			{
+				scanningThread.interrupt();
+				dialog.dismiss();
+			}
+		});
 	}
 	
 	class scanningThread implements Runnable
@@ -189,6 +214,7 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 			}
 			else if(msg.what == 999)
 			{
+				adapter.updateList(serverList);
 				adapter.notifyDataSetChanged();
 			}
 			else if(msg.what == 11)
@@ -243,8 +269,8 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 		{
 			case R.id.scan:
 			{
-				dialog.show();				
-				if(scanningThread.isAlive())
+				dialog.show();
+				if(scanningThread != null && scanningThread.isAlive())
 					scanningThread.interrupt();
 				
 				scanningThread = new Thread(new scanningThread());
