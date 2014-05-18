@@ -116,9 +116,7 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 			switch(item.getItemId())
 			{
 				case R.id.stop_desktop_app:
-//					scanner.send.sendMessage("$$STOPDESKTOPAPP$$");
-					handler.sendEmptyMessage(10);
-					super.onBackPressed();
+					scanner.send.sendMessage("$$STOPDESKTOPAPP$$");
 					return true;
 					
 				case R.id.shutdown:
@@ -215,5 +213,11 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 				startActivity(in);
 			}
 		}
+	}
+	
+	public void scan(View v)
+	{
+		handler.sendEmptyMessage(10);
+		super.onBackPressed();
 	}
 }
