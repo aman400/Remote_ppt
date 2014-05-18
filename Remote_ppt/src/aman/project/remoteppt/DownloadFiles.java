@@ -115,6 +115,7 @@ public class DownloadFiles extends Activity implements DialogBox.NoticeDialogLis
 		downloadDialog.setIcon(R.drawable.download_blue);
 		downloadDialog.setProgress(scanner.receive.getDownloadedLength());
 		downloadDialog.setProgressStyle(ProgressDialog.THEME_TRADITIONAL);
+		downloadDialog.setCanceledOnTouchOutside(false);
 		downloadDialog.show();
 		
 		scanner.send.sendMessage("$$SENDFILE$$");
@@ -151,8 +152,16 @@ public class DownloadFiles extends Activity implements DialogBox.NoticeDialogLis
 			{
 				setProgress();
 			}
-		}
-		
+		}	
+	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		Intent in = new Intent(this, FileViewer.class);
+		in.putExtra("IP", this.ip);
+		in.putExtra("port", this.port);
+		startActivity(in);
 	}
 
 }
