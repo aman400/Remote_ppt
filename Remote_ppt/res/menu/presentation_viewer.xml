@@ -4,7 +4,7 @@
         android:id="@+id/whiteboard"
         android:title="@string/whiteboard"
         android:showAsAction="ifRoom" 
-        android:icon="@drawable/board">
+        android:icon="@drawable/custom_drawing_button">
     </item>
     
     <item 

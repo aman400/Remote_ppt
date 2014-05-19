@@ -68,7 +68,15 @@ public class DownloadFiles extends Activity implements DialogBox.NoticeDialogLis
 			e.printStackTrace();
 		}
 
-		scanner.send.sendMessage("$$DOWNLOAD$$");
+		try
+		{		
+			scanner.send.sendMessage("$$DOWNLOAD$$");
+		}
+		catch(NullPointerException exception)
+		{
+			super.onBackPressed();
+		}
+		
 
 	}
 	

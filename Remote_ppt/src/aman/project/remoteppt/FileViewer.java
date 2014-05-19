@@ -98,6 +98,7 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 
 		});
 	}
+	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
@@ -215,9 +216,16 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 		}
 	}
 	
-	public void scan(View v)
+	public void download(View v)
 	{
 		handler.sendEmptyMessage(10);
 		super.onBackPressed();
+	} 
+	
+	@Override
+	public void onBackPressed() 
+	{
+		Intent in = new Intent(this, ServerScanner.class);
+		startActivity(in);
 	}
 }

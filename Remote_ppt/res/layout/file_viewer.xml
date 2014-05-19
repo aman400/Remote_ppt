@@ -8,15 +8,18 @@
         android:id="@+id/ziplist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
+
     </ListView>
 
     <Button
         android:id="@+id/button1"
+        android:background="@drawable/button_style"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:onClick="scan"
-        android:text="@string/scan" />
+        android:onClick="download"
+        android:text="@string/download_files"
+        style="@style/button_text" />
 
 </RelativeLayout>

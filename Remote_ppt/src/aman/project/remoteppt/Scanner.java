@@ -18,11 +18,13 @@ public class Scanner implements Runnable
 	Receive receive;
 	private ArrayList<Server> serverList;
 	private Handler handler;
+	private int timeout;
 	
 	Scanner(String ip, int port)
 	{
 		this.ip = ip;
 		this.port = port;
+		this.timeout = 4000;
 	}
 	
 	Scanner(String ip, ArrayList<Server> serverList, String message, int port, Handler handler)
@@ -34,8 +36,7 @@ public class Scanner implements Runnable
 	
 	Scanner(String ip, int port, Handler handler)
 	{
-		this.ip = ip;
-		this.port = port;
+		this(ip, port);
 		this.handler = handler;
 	}
 	
@@ -46,7 +47,7 @@ public class Scanner implements Runnable
 		try 
 		{			
 			sock = new Socket();
-			sock.connect(new InetSocketAddress(this.ip, this.port), 3000);
+			sock.connect(new InetSocketAddress(this.ip, this.port), timeout);
 		
 			if(message.equals("$$IP&HOST$$"))
 			{
