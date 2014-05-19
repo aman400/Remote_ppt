@@ -285,7 +285,7 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 	public void onDialogPositiveClick(DialogFragment dialog)
 	{
 		super.onDestroy();
-		this.finish();
+		finish();
 	}
 
 	@Override

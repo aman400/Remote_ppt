@@ -43,7 +43,9 @@
         </activity>
         
         <activity 
-            android:name="aman.project.remoteppt.PresetationViewer" >
+            android:name="aman.project.remoteppt.PresetationViewer"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|keyboard" >
         </activity>
         <activity 
             android:name="DownloadFiles"

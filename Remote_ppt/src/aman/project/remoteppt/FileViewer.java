@@ -5,6 +5,7 @@ import java.io.File;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -106,6 +107,12 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.file_viewer, menu);
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) 
+	{
+		super.onConfigurationChanged(newConfig);
 	}
 	
 	@Override

@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -46,9 +47,6 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 		
 		presentationRunning = false;
 		
-		// set Screen orientation to Landscape
-		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		
 		ActionBar bar = getActionBar();
 		bar.setDisplayHomeAsUpEnabled(true);
 		// get width and height of Screen
@@ -80,16 +78,14 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 		if(!presentationRunning)
 		{
 			try
-			{	
-				presentationRunning = true;
-				
+			{			
 				// Extraction Directory path
 				extractionDirectory = new File(Environment.getExternalStorageDirectory().getPath() + 
 											File.separatorChar + "Droid Drow" + File.separatorChar + "Extracted Files");
 				
 				ProgressDialog pd = new ProgressDialog(this);
 				pd.setCancelable(false);
-				pd.setProgressStyle(ProgressDialog.THEME_HOLO_DARK);
+				pd.setProgressStyle(ProgressDialog.THEME_TRADITIONAL);
 				pd.setIndeterminate(true);
 				pd.setMessage("Preparing desktop...");
 				pd.setButton(ProgressDialog.BUTTON_NEGATIVE, "Cancel", new OnClickListener() {
@@ -108,9 +104,11 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 				// send selected file to selected PC
 				try 
 				{
-					Log.d("debug", "presentation send file");
-					scanner.send.sendMessage("$$PROJECT$$");
-					scanner.send.sendFile(file.getAbsolutePath(), file.length(), name, width, height, pd);
+					if(!presentationRunning)
+					{
+						presentationRunning = true;
+						scanner.send.sendFile(file.getAbsolutePath(), file.length(), name, width, height, pd);
+					}
 					pd.show();
 				}
 				catch (IOException e) 
@@ -360,5 +358,17 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 	{
 		new Thread(new Cleanup(extractionDirectory.getAbsolutePath())).start();
 		super.onBackPressed();
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig)
+	{
+		super.onConfigurationChanged(newConfig);
+		if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+		{
+			presentationRunning = true;
+		}
+		if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT)
+			presentationRunning = true;
 	}
 }

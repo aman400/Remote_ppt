@@ -20,6 +20,7 @@ public class Send implements Runnable
 	private FileTransfer transferFile;
 	private Handler handler;
 	
+	
 	// Constructor for class
 	Send(Socket sock)
 	{
@@ -130,7 +131,7 @@ public class Send implements Runnable
 	
 	public void sendFile(String path, long length, String fileName, int width, int height, ProgressDialog pd) throws IOException, InterruptedException
 	{
-		Log.d("debug", "sending file");
+		sendMessage("$$PROJECT$$");
 		this.sendInt(width);
 		this.sendInt(height);
 		this.sendMessage(fileName);
