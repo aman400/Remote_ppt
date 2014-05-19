@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -48,7 +50,7 @@ public class DownloadFiles extends Activity implements DialogBox.NoticeDialogLis
 		pDialog = new ProgressDialog(this);
 		pDialog.setIndeterminate(true);
 		pDialog.setIcon(R.drawable.download_blue);
-		pDialog.setProgressStyle(ProgressDialog.THEME_TRADITIONAL);
+		pDialog.setProgressStyle(ProgressDialog.THEME_HOLO_LIGHT);
 		pDialog.setMessage(getString(R.string.fetching) +"...");
 		pDialog.setCancelable(false);
 		pDialog.show();
@@ -74,7 +76,7 @@ public class DownloadFiles extends Activity implements DialogBox.NoticeDialogLis
 		}
 		catch(NullPointerException exception)
 		{
-			super.onBackPressed();
+			onBackPressed();
 		}
 		
 
@@ -124,6 +126,14 @@ public class DownloadFiles extends Activity implements DialogBox.NoticeDialogLis
 		downloadDialog.setProgress(scanner.receive.getDownloadedLength());
 		downloadDialog.setProgressStyle(ProgressDialog.THEME_TRADITIONAL);
 		downloadDialog.setCanceledOnTouchOutside(false);
+		downloadDialog.setButton(ProgressDialog.BUTTON_NEGATIVE, getString(R.string.cancel), new OnClickListener() 
+		{
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				scanner.receive.interruptReceiving();
+			}
+		});
 		downloadDialog.show();
 		
 		scanner.send.sendMessage("$$SENDFILE$$");
@@ -169,6 +179,8 @@ public class DownloadFiles extends Activity implements DialogBox.NoticeDialogLis
 		Intent in = new Intent(this, FileViewer.class);
 		in.putExtra("IP", this.ip);
 		in.putExtra("port", this.port);
+		in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
+		in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(in);
 	}
 

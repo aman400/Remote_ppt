@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,7 +24,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class ServerScanner extends Activity implements DialogBox.NoticeDialogListener
+public class ServerScanner extends Activity
 {
 	private String network, ip;
 	private final int port = 5678;
@@ -175,6 +174,7 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 					catch (InterruptedException e) 
 					{
 						Thread.currentThread().interrupt();
+						return;
 					}
 				}				
 			}
@@ -232,24 +232,18 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 	@Override
 	protected void onPause() 
 	{
-		scanningThread.interrupt();
-		serverList.clear();
-		update.sendEmptyMessage(999);
-		super.onPause();
-	}
-	@Override
-	public void onBackPressed()
-	{
-		DialogBox dialogBox = new DialogBox();
-
-		Bundle bundle = new Bundle();
-		bundle.putString("Title", getString(R.string.dialog_title));
-		bundle.putString("Message", getString(R.string.activity_destroy_message));
-		bundle.putString("YES", getString(R.string.positive_button));
-		bundle.putString("NO", getString(R.string.negetive_button));
+		try
+		{
+			update.sendEmptyMessage(999);
+			scanningThread.interrupt();
+		}
+		catch(NullPointerException ex)
+		{	}
+		finally
+		{
+			super.onPause();
+		}
 		
-		dialogBox.setArguments(bundle);
-		dialogBox.show(getFragmentManager(), "message");
 	}
 	
 	@Override
@@ -280,17 +274,4 @@ public class ServerScanner extends Activity implements DialogBox.NoticeDialogLis
 		}
 		
 	}
-	
-	@Override
-	public void onDialogPositiveClick(DialogFragment dialog)
-	{
-		super.onDestroy();
-		finish();
-	}
-
-	@Override
-	public void onDialogNegetiveClick(DialogFragment dialog) 
-	{
-		dialog.dismiss();
-	}	
 }

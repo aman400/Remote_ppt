@@ -233,6 +233,8 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 	public void onBackPressed() 
 	{
 		Intent in = new Intent(this, ServerScanner.class);
+		in.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 
+		in.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(in);
 	}
 }

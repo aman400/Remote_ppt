@@ -20,6 +20,7 @@ public class Receive implements Runnable
 	private ArrayList<MyFile> myFiles;
 	private Handler handler;
 	private long size, receivedLength;
+	private boolean isReceving;
 	
 	Receive(Socket sock)
 	{
@@ -91,6 +92,7 @@ public class Receive implements Runnable
 	
 	public void receiveFile(String path, long length)
 	{
+		isReceving = true;
 		receivedLength = 0;
 		int count = 0;
 		byte[] buffer = new byte[1000];
@@ -109,7 +111,7 @@ public class Receive implements Runnable
 				receivedLength += count;
 				handler.sendEmptyMessage(100);
 
-				if(length == receivedLength)
+				if(length == receivedLength || !isReceving)
 					break;
 			}
 			fos.close();
@@ -179,4 +181,9 @@ public class Receive implements Runnable
 		}
 		return -1;
 	}	
+	
+	public void interruptReceiving()
+	{
+		isReceving = false;
+	}
 }

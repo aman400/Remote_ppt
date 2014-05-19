@@ -10,13 +10,11 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -85,7 +83,7 @@ public class PresetationViewer extends Activity implements DialogBox.NoticeDialo
 				
 				ProgressDialog pd = new ProgressDialog(this);
 				pd.setCancelable(false);
-				pd.setProgressStyle(ProgressDialog.THEME_TRADITIONAL);
+				pd.setProgressStyle(ProgressDialog.THEME_HOLO_DARK);
 				pd.setIndeterminate(true);
 				pd.setMessage("Preparing desktop...");
 				pd.setButton(ProgressDialog.BUTTON_NEGATIVE, "Cancel", new OnClickListener() {
