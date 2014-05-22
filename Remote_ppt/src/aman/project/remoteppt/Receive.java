@@ -1,8 +1,10 @@
 package aman.project.remoteppt;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -16,11 +18,11 @@ public class Receive implements Runnable
 	private ObjectInputStream ois;	
 	private ArrayList<Server> serverList;
 	private String IP, path;
-	private Send send;
 	private ArrayList<MyFile> myFiles;
 	private Handler handler;
 	private long size, receivedLength;
 	private boolean isReceving;
+	private BufferedReader reader;
 	
 	Receive(Socket sock)
 	{
@@ -28,6 +30,7 @@ public class Receive implements Runnable
 		try 
 		{
 			this.ois = new ObjectInputStream(sock.getInputStream());
+			this.reader = new BufferedReader(new InputStreamReader(ois));
 		}
 		catch (IOException e) 
 		{
@@ -38,7 +41,6 @@ public class Receive implements Runnable
 	Receive(Socket sock, ArrayList<Server> serverList, String IP, Send send, Handler handler)
 	{
 		this(sock, handler);
-		this.send = send;
 		this.IP = IP;
 		this.serverList = serverList;
 	}
@@ -147,7 +149,7 @@ public class Receive implements Runnable
 	{
 		try
 		{
-			return ois.readLine();
+			return reader.readLine();
 		}
 		catch(IOException ex)
 		{
