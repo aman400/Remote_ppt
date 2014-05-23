@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +29,7 @@ public class ServerScanner extends Activity
 {
 	private String network, ip;
 	private final int port = 5678;
-	private static ArrayList<Server> serverList;
+	private ArrayList<Server> serverList;
 	private ServerListAdapter adapter;
 	private ListView list;
 	private UpdateGUI update;
@@ -212,6 +213,7 @@ public class ServerScanner extends Activity
 			}
 			else if(msg.what == 999)
 			{
+				Log.d("debug", "fired");
 				adapter.updateList(serverList);
 				adapter.notifyDataSetChanged();
 			}

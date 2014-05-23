@@ -58,6 +58,8 @@ public class FileViewer extends Activity implements DialogBox.NoticeDialogListen
 		try
 		{
 			file = new File(Environment.getExternalStorageDirectory().getPath()+File.separatorChar+"Droid Drow"+File.separatorChar+"Files");
+			if(!(file.exists()))
+				file.mkdirs();
 
 			files = file.list();
 		}

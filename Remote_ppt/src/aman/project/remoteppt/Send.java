@@ -9,6 +9,7 @@ import java.net.UnknownHostException;
 
 import android.app.ProgressDialog;
 import android.os.Handler;
+import android.util.Log;
 
 //class that handles message sending.
 public class Send implements Runnable
@@ -31,12 +32,6 @@ public class Send implements Runnable
 		{
 			ex.printStackTrace();
 		}
-	}
-	
-	Send(Socket sock, String message, Handler handler)
-	{
-		this(sock, handler);
-		sendMessage(message);
 	}
 	
 	
@@ -72,6 +67,7 @@ public class Send implements Runnable
 	{
 		try
 		{
+			Log.d("message", message);
 			oos.writeBytes(message+"\r\n");
 			oos.flush();
 		}

@@ -1,16 +1,13 @@
 package aman.project.remoteppt;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
 import android.os.Handler;
-import android.util.Log;
 
 //class to Receive messages
 public class Receive implements Runnable
@@ -22,7 +19,6 @@ public class Receive implements Runnable
 	private Handler handler;
 	private long size, receivedLength;
 	private boolean isReceving;
-	private BufferedReader reader;
 	
 	Receive(Socket sock)
 	{
@@ -30,7 +26,6 @@ public class Receive implements Runnable
 		try 
 		{
 			this.ois = new ObjectInputStream(sock.getInputStream());
-			this.reader = new BufferedReader(new InputStreamReader(ois));
 		}
 		catch (IOException e) 
 		{
@@ -61,8 +56,6 @@ public class Receive implements Runnable
 			// this code runs only when it gets a new connection
 			if(msg.equals("$$IP&HOST$$"))
 			{
-			
-				String serverAddress = this.receiveMessage();
 				String serverName = this.receiveMessage();
 				serverList.add(new Server(this.IP, serverName));
 				handler.sendEmptyMessage(999);
@@ -81,14 +74,9 @@ public class Receive implements Runnable
 			
 			else if(msg.equals("$$SENDINGFILE$$"))
 			{
-				Log.d("file", "receiving");
 				receiveFile(path, size);
 			}
-			
-			else
-			{
-				Log.d("mymessage", msg);
-			}
+
 		}
 	}
 	
@@ -149,7 +137,7 @@ public class Receive implements Runnable
 	{
 		try
 		{
-			return reader.readLine();
+			return ois.readLine();
 		}
 		catch(IOException ex)
 		{

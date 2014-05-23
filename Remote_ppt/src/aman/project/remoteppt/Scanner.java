@@ -49,19 +49,24 @@ public class Scanner implements Runnable
 			sock = new Socket();
 			sock.connect(new InetSocketAddress(this.ip, this.port), timeout);
 		
-			if(message.equals("$$IP&HOST$$"))
+			if(handler != null)
 			{
-				receive = new Receive(sock, serverList, ip, send, handler);	
-				send = new Send(sock, message, handler);
-				new Thread(receive).start();
-
-			}
-			else if(handler != null)
-			{
-				receive = new Receive(sock, handler);
-				send = new Send(sock, handler);
-				new Thread(send).start();
-				new Thread(receive).start();
+				Log.d("debug", "message sent");
+				if(message.equals("$$IP&HOST$$"))
+				{
+					send = new Send(sock, handler);
+					receive = new Receive(sock, serverList, ip, send, handler);	
+					new Thread(receive).start();
+					send.sendMessage("$$IP&HOST$$");
+				}
+				
+				else
+				{
+					receive = new Receive(sock, handler);
+					send = new Send(sock, handler);
+					new Thread(send).start();
+					new Thread(receive).start();
+				}
 			}
 			else
 			{
